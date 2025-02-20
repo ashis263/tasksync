@@ -4,11 +4,18 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily:{
         atkinson: "Atkinson Hyperlegible Next"
       },
+      colors:{
+        colorOne: "#4E545C",
+        colorTwo: "#8D9797",
+        colorThree: "#E5E8E8",
+        colorFour: "#1d232a"
+      }
     },
   },
   plugins: [
