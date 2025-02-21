@@ -11,7 +11,7 @@ export default {
         atkinson: "Atkinson Hyperlegible Next"
       },
       colors:{
-        colorOne: "#4E545C",
+        colorOne: "#00838F",
         colorTwo: "#8D9797",
         colorThree: "#E5E8E8",
         colorFour: "#1d232a"
