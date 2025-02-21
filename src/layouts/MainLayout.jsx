@@ -19,6 +19,7 @@ const MainLayout = () => {
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
+    const [modified, setModified] = useState(false);
     const { register, handleSubmit, reset } = useForm();
 
     const auth = getAuth(app);
@@ -48,6 +49,7 @@ const MainLayout = () => {
         }
         socket.emit("addTask", data)
         socket.on('taskAdded', (data) => {
+            setModified(!modified)
             Toast.fire({
                 icon: "success",
                 title: data
@@ -62,18 +64,18 @@ const MainLayout = () => {
             if (currentUser) {
                 setUser(currentUser);
                 setLoading(false);
+                socket.emit("getTasks", currentUser.email);
+                socket.on("tasks", (tasks) => setTasks(tasks));
             } else {
                 setLoading(false)
             }
-            socket.emit("getTasks", currentUser.email);
-            socket.on("tasks", (tasks) => setTasks(tasks));
         });
 
         return () => {
             unsubscribe()
             socket.off("tasks")
         };
-    }, [])
+    }, [modified])
 
     if (loading) {
         return (
@@ -87,8 +89,16 @@ const MainLayout = () => {
         return <Login></Login>
     }
 
+    const data ={
+        tasks,
+        socket,
+        Toast,
+        modified,
+        setModified
+    }
+
     return (
-        <TaskContext.Provider value={tasks}>
+        <TaskContext.Provider value={data}>
             <div className="min-h-lvh">
                 <Navbar setUser={setUser}></Navbar>
                 <div className="w-11/12 mx-auto flex max-sm:justify-center justify-end">
@@ -127,6 +137,7 @@ const MainLayout = () => {
                     </form>
                 </Modal>
             </div>
+            {console.log(tasks)}
         </TaskContext.Provider>
     );
 }
