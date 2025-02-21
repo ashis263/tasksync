@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
 import Sidebar from "../components/Sidebar/Sidebar";
 import { createContext, useEffect, useState } from "react";
@@ -21,6 +21,7 @@ const MainLayout = () => {
     const [tasks, setTasks] = useState([]);
     const [modified, setModified] = useState(false);
     const { register, handleSubmit, reset } = useForm();
+    const location = useLocation()
 
     const auth = getAuth(app);
     const socket = io("http://localhost:5000");
@@ -39,7 +40,7 @@ const MainLayout = () => {
     });
 
     const submitForm = async (formData) => {
-        const { deadline: prevDate, ...other} = formData;
+        const { deadline: prevDate, ...other } = formData;
         const data = {
             ...other,
             addedBy: user?.email,
@@ -50,6 +51,13 @@ const MainLayout = () => {
         socket.emit("addTask", data)
         socket.on('taskAdded', (data) => {
             setModified(!modified)
+            const activityData = {
+                operation: "Added",
+                title: formData.title,
+                modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
+                user: user.email
+            }
+            socket.emit('modified', activityData);
             Toast.fire({
                 icon: "success",
                 title: data
@@ -89,12 +97,13 @@ const MainLayout = () => {
         return <Login></Login>
     }
 
-    const data ={
+    const data = {
         tasks,
         socket,
         Toast,
         modified,
-        setModified
+        setModified,
+        user
     }
 
     return (
@@ -106,7 +115,7 @@ const MainLayout = () => {
                 </div>
                 <div className="w-11/12 mx-auto my-5 lg:my-10 flex justify-between">
                     <Sidebar></Sidebar>
-                    <div className="lg:w-[70%] border border-colorTwo rounded-xl p-5 w-full h-[70vh]">
+                    <div className={`lg:w-[70%] border border-colorTwo rounded-xl p-5 w-full h-[70vh] ${location.pathname === '/log' ? "hidden" : ''}`}>
                         <Outlet></Outlet>
                     </div>
                 </div>
@@ -137,7 +146,6 @@ const MainLayout = () => {
                     </form>
                 </Modal>
             </div>
-            {console.log(tasks)}
         </TaskContext.Provider>
     );
 }

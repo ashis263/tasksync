@@ -9,25 +9,25 @@ const Home = () => {
   const done = tasks.filter(task => task.category === 'Done');
   return (
     <div className="flex justify-between h-[calc(100%-50px)]">
-      <div>
+      <div className="w-[32%]">
         <h2 className="text-xl sm:text-3xl font-medium mb-5 border-b border-colorOne">To Do</h2>
-        <div className="overflow-scroll h-full">
+        <div className="overflow-auto h-full">
           {
             todo.map(item => <Item key={item._id} item={item}></Item>)
           }
         </div>
       </div>
-      <div>
+      <div className="w-[32%]">
         <h2 className="text-xl sm:text-3xl font-medium mb-5 border-b border-colorOne">In Progress</h2>
-        <div className="overflow-scroll h-full">
+        <div className="overflow-auto h-full">
           {
             inProgess.map(item => <Item key={item._id} item={item}></Item>)
           }
         </div>
       </div>
-      <div>
+      <div className="w-[32%]">
         <h2 className="text-xl sm:text-3xl font-medium mb-5 border-b border-colorOne">Done</h2>
-        <div className="overflow-scroll h-full">
+        <div className="overflow-auto h-full">
           {
             done.map(item => <Item key={item._id} item={item}></Item>)
           }

@@ -40,8 +40,7 @@ const Navbar = ({setUser}) => {
     }
     const navlinks = <div className="lg:flex items-center gap-5">
         <li><NavLink className="active:underline active:bg-transparent" to='/'>Home</NavLink></li>
-        <li><NavLink className="active:underline active:bg-transparent" to='/add'>Add Task</NavLink></li>
-        <li><NavLink className="active:underline active:bg-transparent lg:hidden" to='/add'>Activity Log</NavLink></li>
+        <li><NavLink className="active:underline active:bg-transparent lg:hidden" to='/log'>Activity Log</NavLink></li>
         <li><button onClick={handleClick} className="btn text-xs ml-2 btn-sm bg-colorFour text-colorThree border-none lg:hidden"><IoLogOutOutline />Logout</button></li>
     </div>
     return (
