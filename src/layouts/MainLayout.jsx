@@ -19,6 +19,7 @@ const MainLayout = () => {
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
+    const [activities, setActivities] = useState([]);
     const { register, handleSubmit, reset } = useForm();
     const location = useLocation()
 
@@ -62,6 +63,10 @@ const MainLayout = () => {
             });
             reset();
             setOpen(false);
+            socket.emit("getTasks", user.email);
+            socket.on("tasks", (tasks) => setTasks(tasks));
+            socket.emit('getActivities', user.email);
+            socket.on('activities', (data) => setActivities(data));
         })
     }
 
@@ -81,7 +86,7 @@ const MainLayout = () => {
             unsubscribe()
             socket.off("tasks")
         };
-    }, [socket])
+    }, [])
 
     if (loading) {
         return (
@@ -97,9 +102,11 @@ const MainLayout = () => {
 
     const data = {
         tasks,
+        setTasks,
         socket,
         Toast,
-        user
+        user,activities,
+        setActivities
     }
 
     return (

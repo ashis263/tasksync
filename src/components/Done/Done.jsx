@@ -2,12 +2,30 @@ import { useDrop } from "react-dnd";
 import Task from "../Task/Task";
 import { useContext } from "react";
 import { TaskContext } from "../../layouts/MainLayout";
+import moment from "moment";
 
-const Done = ({tasks}) => {
-    const {socket} = useContext(TaskContext);
+const Done = ({ tasks }) => {
+    const { socket, user, Toast, setActivities, setTasks } = useContext(TaskContext);
     const draggedItem = task => {
-        if (task.category !== "Done"){
-            socket.emit("movedCategory", {id:task._id, to: "Done"});
+        if (task.category !== "Done") {
+            socket.emit("movedCategory", { id: task._id, to: "Done" });
+            socket.on('categoryModified', () => {
+                const activityData = {
+                    operation: `Moved from ${task.category} to Done`,
+                    title: task.title,
+                    modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
+                    user: user.email
+                }
+                socket.emit('modified', activityData);
+                Toast.fire({
+                    icon: "success",
+                    title: `${task.title} Moved from ${task.category} to Done`
+                });
+                socket.emit("getTasks", user.email);
+                socket.on("tasks", (tasks) => setTasks(tasks));
+                socket.emit('getActivities', user.email);
+                socket.on('activities', (data) => setActivities(data));
+            })
         }
     }
     const [{ isOver }, drop] = useDrop(() => ({

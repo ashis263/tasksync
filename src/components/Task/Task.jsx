@@ -5,7 +5,7 @@ import moment from 'moment';
 import { useDrag } from 'react-dnd';
 
 const Task = ({ task }) => {
-    const { socket, Toast, modified, setModified } = useContext(TaskContext);
+    const { socket, Toast, user, setTasks, setActivities } = useContext(TaskContext);
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "task",
         item: { task: task },
@@ -23,11 +23,15 @@ const Task = ({ task }) => {
                 user: task.addedBy
             }
             socket.emit('modified', data);
-            setModified(!modified)
             Toast.fire({
                 icon: "success",
                 title: 'Task deleted'
             });
+
+            socket.emit("getTasks", user.email);
+            socket.on("tasks", (tasks) => setTasks(tasks));
+            socket.emit('getActivities', user.email);
+            socket.on('activities', (data) => setActivities(data));
         })
     }
     return (

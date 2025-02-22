@@ -4,7 +4,7 @@ import { TouchBackend } from 'react-dnd-touch-backend';
 import InProgresses from "../../components/InProgresses/InProgresses";
 import Todos from "../../components/Todos/Todos";
 import Done from "../../components/Done/Done";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { TaskContext } from "../../layouts/MainLayout";
 
 const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -12,9 +12,14 @@ const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 const Home = () => {
   const backend = isMobile ? TouchBackend : HTML5Backend;
   const { tasks } = useContext(TaskContext);
-  const todo = tasks.filter(task => task.category === 'To Do');
-  const inProgess = tasks.filter(task => task.category === 'In Progress');
-  const done = tasks.filter(task => task.category === 'Done');
+  const [todo, setTodo] = useState(tasks.filter(task => task.category === 'To Do'));
+  const [inProgess, setInProgress] = useState(tasks.filter(task => task.category === 'In Progress'));
+  const[done, setDone] = useState(tasks.filter(task => task.category === 'Done'));
+  useEffect(() => {
+    setTodo(tasks.filter(task => task.category === 'To Do'));
+    setInProgress(tasks.filter(task => task.category === 'In Progress'));
+    setDone(tasks.filter(task => task.category === 'Done'));
+  }, [tasks])
   return (
     <div className="flex justify-between h-[calc(100%-50px)]">
       <DndProvider backend={HTML5Backend}>
