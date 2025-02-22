@@ -17,7 +17,7 @@ const Home = () => {
   const done = tasks.filter(task => task.category === 'Done');
   return (
     <div className="flex justify-between h-[calc(100%-50px)]">
-      <DndProvider backend={TouchBackend}>
+      <DndProvider backend={HTML5Backend}>
         <div className="w-[32%]">
           <Todos tasks={todo}></Todos>
         </div>

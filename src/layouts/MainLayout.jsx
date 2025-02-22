@@ -23,7 +23,7 @@ const MainLayout = () => {
     const location = useLocation()
 
     const auth = getAuth(app);
-    const socket = io("https://tasksync-server-production.up.railway.app/");
+    const socket = io("http://localhost:5000/");
 
 
     const Toast = Swal.mixin({
