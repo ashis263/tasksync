@@ -69,6 +69,9 @@ const Task = ({ task }) => {
             socket.on('activities', (data) => setActivities(data));
         })
     }
+    const date = moment("February 22nd 2025, 5:29 PM", 'MMMM Do, YYYY, h:mm A');
+    const isAfter = moment().isAfter(date);
+    console.log(isAfter);
     return (
         <div ref={drag} className={`rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[50vh] overflow-scroll sm:h-[30vh] ${isDragging ? "opacity-25" : ''}`}>            <h3 className='text-xl font-bold text-colorOne'>{task.title}</h3>
             <p className='overflow-auto'>{task.description}</p>

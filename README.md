@@ -51,7 +51,7 @@ TaskSync is a modern, collaborative todo application built using the MERN stack 
 1.  **Clone the repository:**
 
     ```bash
-    git clone <repository_url>
+    git clone https://github.com/ashis263/tasksync
     cd TaskSync
     ```
 
