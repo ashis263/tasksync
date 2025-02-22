@@ -2,3 +2,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide scrollbar for Chrome, Safari */
+::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Hide scrollbar for Firefox */
+  * {
+    scrollbar-width: none;
+  }
+  
+  /* Hide scrollbar for Edge, IE */
+  * {
+    -ms-overflow-style: none;
+  }
+  

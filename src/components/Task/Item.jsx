@@ -3,16 +3,16 @@ import { useContext } from 'react';
 import { TaskContext } from '../../layouts/MainLayout';
 import moment from 'moment';
 
-const Item = ({ item }) => {
+const Task = ({ task }) => {
     const {socket, Toast, modified, setModified} = useContext(TaskContext);
     const handleDelete = () => {
-        socket.emit('deleteTask', item._id);
+        socket.emit('deleteTask', task._id);
         socket.on('taskDeleted', () => {
             const data = {
                 operation: "Deleted",
-                title: item.title,
+                title: task.title,
                 modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
-                user: item.addedBy
+                user: task.addedBy
             }
             socket.emit('modified', data);
             setModified(!modified)
@@ -23,19 +23,19 @@ const Item = ({ item }) => {
         })
     }
     return (
-        <div className='rounded-xl p-5 border border-colorOne text-justify mb-2'>
-            <h3 className='text-xl font-bold text-colorOne'>{item.title}</h3>
-            <p className='overflow-auto'>{item.description}</p>
-            <p className='font-mono text-xs my-2'>Deadline:<br/>{item.deadline}</p>
+        <div className='rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[50vh] overflow-scroll sm:h-[30vh]'>
+            <h3 className='text-xl font-bold text-colorOne'>{task.title}</h3>
+            <p className='overflow-auto'>{task.description}</p>
+            <p className='font-mono text-xs my-2'>Deadline:<br/>{task.deadline}</p>
             <button onClick={handleDelete} className='btn-sm btn w-full bg-colorOne text-colorThree hover:bg-colorOne'>Delete</button>
         </div>
     );
 };
 
 
-Item.propTypes = {
-    item: PropTypes.object.isRequired
+Task.propTypes = {
+    task: PropTypes.object.isRequired
 };
 
 
-export default Item;
+export default Task;

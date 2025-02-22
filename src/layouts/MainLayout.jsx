@@ -19,12 +19,11 @@ const MainLayout = () => {
     const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [tasks, setTasks] = useState([]);
-    const [modified, setModified] = useState(false);
     const { register, handleSubmit, reset } = useForm();
     const location = useLocation()
 
     const auth = getAuth(app);
-    const socket = io("http://localhost:5000");
+    const socket = io("https://tasksync-server-production.up.railway.app/");
 
 
     const Toast = Swal.mixin({
@@ -50,7 +49,6 @@ const MainLayout = () => {
         }
         socket.emit("addTask", data)
         socket.on('taskAdded', (data) => {
-            setModified(!modified)
             const activityData = {
                 operation: "Added",
                 title: formData.title,
@@ -83,7 +81,7 @@ const MainLayout = () => {
             unsubscribe()
             socket.off("tasks")
         };
-    }, [modified])
+    }, [socket])
 
     if (loading) {
         return (
@@ -101,8 +99,6 @@ const MainLayout = () => {
         tasks,
         socket,
         Toast,
-        modified,
-        setModified,
         user
     }
 
@@ -115,7 +111,7 @@ const MainLayout = () => {
                 </div>
                 <div className="w-11/12 mx-auto my-5 lg:my-10 flex justify-between">
                     <Sidebar></Sidebar>
-                    <div className={`lg:w-[70%] border border-colorTwo rounded-xl p-5 w-full h-[70vh] ${location.pathname === '/log' ? "hidden" : ''}`}>
+                    <div className={`lg:w-[70%] border border-colorTwo rounded-xl p-5 w-full sm:h-[70vh] ${location.pathname === '/log' ? "hidden" : ''}`}>
                         <Outlet></Outlet>
                     </div>
                 </div>
