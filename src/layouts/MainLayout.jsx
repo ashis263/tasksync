@@ -129,13 +129,13 @@ const MainLayout = () => {
                             <label className="label">
                                 <span className={`label-text`}>Title</span>
                             </label>
-                            <input type="text" placeholder="Title" {...register('title', { required: true })} className="input max-lg:input-sm input-bordered" required />
+                            <input type="text" placeholder="Title" {...register('title', { required: true })}  maxLength="50" className="input max-lg:input-sm input-bordered" required />
                         </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className={`label-text`}>Description</span>
                             </label>
-                            <textarea className="textarea textarea-bordered" placeholder="Description" {...register('description', { required: true })}></textarea>
+                            <textarea className="textarea textarea-bordered" placeholder="Description"  maxLength="200" {...register('description', { required: true })}></textarea>
                         </div>
                         <div className="form-control">
                             <label className="label">

@@ -84,13 +84,13 @@ const Task = ({ task }) => {
                         <label className="label">
                             <span className={`label-text`}>Title</span>
                         </label>
-                        <input type="text" defaultValue={task.title} placeholder="Title" {...register('title', { required: true })} className="input max-lg:input-sm input-bordered" required />
+                        <input type="text" defaultValue={task.title} placeholder="Title" {...register('title', { required: true })}  maxLength="50" className="input max-lg:input-sm input-bordered" required />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className={`label-text`}>Description</span>
                         </label>
-                        <textarea defaultValue={task.description} className="textarea textarea-bordered" placeholder="Description" {...register('description', { required: true })}></textarea>
+                        <textarea defaultValue={task.description}  maxLength="200" className="textarea textarea-bordered" placeholder="Description" {...register('description', { required: true })}></textarea>
                     </div>
                     <div className="form-control">
                         <label className="label">
