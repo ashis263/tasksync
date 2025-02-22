@@ -2,9 +2,17 @@ import PropTypes from 'prop-types';
 import { useContext } from 'react';
 import { TaskContext } from '../../layouts/MainLayout';
 import moment from 'moment';
+import { useDrag } from 'react-dnd';
 
 const Task = ({ task }) => {
-    const {socket, Toast, modified, setModified} = useContext(TaskContext);
+    const { socket, Toast, modified, setModified } = useContext(TaskContext);
+    const [{ isDragging }, drag] = useDrag(() => ({
+        type: "task",
+        item: { task: task },
+        collect: (monitor) => ({
+            isDragging: !!monitor.isDragging()
+        })
+    }))
     const handleDelete = () => {
         socket.emit('deleteTask', task._id);
         socket.on('taskDeleted', () => {
@@ -23,10 +31,9 @@ const Task = ({ task }) => {
         })
     }
     return (
-        <div className='rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[50vh] overflow-scroll sm:h-[30vh]'>
-            <h3 className='text-xl font-bold text-colorOne'>{task.title}</h3>
+        <div ref={drag} className={`rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[50vh] overflow-scroll sm:h-[30vh] ${isDragging ? "opacity-25" : ''}`}>            <h3 className='text-xl font-bold text-colorOne'>{task.title}</h3>
             <p className='overflow-auto'>{task.description}</p>
-            <p className='font-mono text-xs my-2'>Deadline:<br/>{task.deadline}</p>
+            <p className='font-mono text-xs my-2'>Deadline:<br />{task.deadline}</p>
             <button onClick={handleDelete} className='btn-sm btn w-full bg-colorOne text-colorThree hover:bg-colorOne'>Delete</button>
         </div>
     );

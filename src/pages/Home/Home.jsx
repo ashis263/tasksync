@@ -1,39 +1,34 @@
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { TouchBackend } from 'react-dnd-touch-backend';
+import InProgresses from "../../components/InProgresses/InProgresses";
+import Todos from "../../components/Todos/Todos";
+import Done from "../../components/Done/Done";
 import { useContext } from "react";
 import { TaskContext } from "../../layouts/MainLayout";
-import Task from "../../components/Task/Item";
+
+const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
 const Home = () => {
+  const backend = isMobile ? TouchBackend : HTML5Backend;
   const { tasks } = useContext(TaskContext);
   const todo = tasks.filter(task => task.category === 'To Do');
   const inProgess = tasks.filter(task => task.category === 'In Progress');
   const done = tasks.filter(task => task.category === 'Done');
   return (
-      <div className="flex justify-between h-[calc(100%-50px)]">
+    <div className="flex justify-between h-[calc(100%-50px)]">
+      <DndProvider backend={TouchBackend}>
         <div className="w-[32%]">
-          <h2 className="text-xl sm:text-3xl font-medium mb-5 border-b border-colorOne">To Do</h2>
-          <div className="overflow-auto h-full">
-            {
-              todo.map(task => <Task key={task._id} task={task}></Task>)
-            }
-          </div>
+          <Todos tasks={todo}></Todos>
         </div>
         <div className="w-[32%]">
-          <h2 className="text-xl sm:text-3xl font-medium mb-5 border-b border-colorOne">In Progress</h2>
-          <div className="overflow-auto h-full">
-            {
-              inProgess.map(task => <Task key={task._id} task={task}></Task>)
-            }
-          </div>
+          <InProgresses tasks={inProgess}></InProgresses>
         </div>
         <div className="w-[32%]">
-          <h2 className="text-xl sm:text-3xl font-medium mb-5 border-b border-colorOne">Done</h2>
-          <div className="overflow-auto h-full">
-            {
-              done.map(task => <Task key={task._id} task={task}></Task>)
-            }
-          </div>
+          <Done tasks={done}></Done>
         </div>
-      </div>
+      </DndProvider>
+    </div>
   );
 }
 
