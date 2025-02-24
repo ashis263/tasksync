@@ -56,7 +56,7 @@ const MainLayout = () => {
             operation: "Added",
             title: formData.title,
             modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
-            user: user.email
+            user: user.email,
         }
         axios.post('http://localhost:5000/activities', activityData);
     }

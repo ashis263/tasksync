@@ -10,7 +10,7 @@ import axios from 'axios';
 const Task = ({ task }) => {
     const [open, setOpen] = useState(false);
     const { register, handleSubmit, reset } = useForm();
-    const { socket, Toast, user, setTasks, setActivities } = useContext(TaskContext);
+    const { user } = useContext(TaskContext);
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "task",
         item: { task: task },
@@ -36,32 +36,18 @@ const Task = ({ task }) => {
         const data = {
             ...other,
             deadline: moment(prevDate).format("MMMM Do YYYY, h:mm A"),
-            oldId: task._id
         }
-        socket.emit("update", data)
+        axios.put(`http://localhost:5000/tasks/${task._id}/?email=${user.email}`, data);
+        reset();
+        setOpen(false);
         const activityData = {
-            operation: `Updated ${task.title}`,
-            title: formData.title,
+            operation: "Updated",
+            title: task.title,
             modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
             user: user.email
         }
-        socket.on('updated', () => {
-            socket.emit('modified', activityData);
-            Toast.fire({
-                icon: "success",
-                title: `Updated ${task.title}`
-            });
-            reset();
-            setOpen(false);
-            socket.emit("getTasks", user.email);
-            socket.on("tasks", (tasks) => setTasks(tasks));
-            socket.emit('getActivities', user.email);
-            socket.on('activities', (data) => setActivities(data));
-        })
+        axios.post('http://localhost:5000/activities', activityData);
     }
-    const date = moment("February 22nd 2025, 5:29 PM", 'MMMM Do, YYYY, h:mm A');
-    const isAfter = moment().isAfter(date);
-    console.log(isAfter);
     return (
         <div ref={drag} className={`rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[50vh] overflow-scroll sm:h-[30vh] ${isDragging ? "opacity-25" : ''}`}>            <h3 className='text-xl font-bold text-colorOne'>{task.title}</h3>
             <p className='overflow-auto'>{task.description}</p>
@@ -77,13 +63,13 @@ const Task = ({ task }) => {
                         <label className="label">
                             <span className={`label-text`}>Title</span>
                         </label>
-                        <input type="text" defaultValue={task.title} placeholder="Title" {...register('title', { required: true })}  maxLength="50" className="input max-lg:input-sm input-bordered" required />
+                        <input type="text" defaultValue={task.title} placeholder="Title" {...register('title', { required: true })} maxLength="50" className="input max-lg:input-sm input-bordered" required />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className={`label-text`}>Description</span>
                         </label>
-                        <textarea defaultValue={task.description}  maxLength="200" className="textarea textarea-bordered" placeholder="Description" {...register('description', { required: true })}></textarea>
+                        <textarea defaultValue={task.description} maxLength="200" className="textarea textarea-bordered" placeholder="Description" {...register('description', { required: true })}></textarea>
                     </div>
                     <div className="form-control">
                         <label className="label">
