@@ -5,6 +5,7 @@ import moment from 'moment';
 import { useDrag } from 'react-dnd';
 import { useForm } from 'react-hook-form';
 import Modal from 'react-responsive-modal';
+import axios from 'axios';
 
 const Task = ({ task }) => {
     const [open, setOpen] = useState(false);
@@ -18,25 +19,14 @@ const Task = ({ task }) => {
         })
     }))
     const handleDelete = () => {
-        socket.emit('deleteTask', task._id);
-        socket.on('taskDeleted', () => {
-            const data = {
-                operation: "Deleted",
-                title: task.title,
-                modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
-                user: task.addedBy
-            }
-            socket.emit('modified', data);
-            Toast.fire({
-                icon: "success",
-                title: 'Task deleted'
-            });
-
-            socket.emit("getTasks", user.email);
-            socket.on("tasks", (tasks) => setTasks(tasks));
-            socket.emit('getActivities', user.email);
-            socket.on('activities', (data) => setActivities(data));
-        })
+        axios.delete(`http://localhost:5000/tasks/${task._id}/?email=${user.email}`);
+        const activityData = {
+            operation: "Deleted",
+            title: task.title,
+            modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
+            user: user.email
+        }
+        axios.post('http://localhost:5000/activities', activityData);
     }
     const handleEdit = () => {
         setOpen(true);
