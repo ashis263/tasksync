@@ -52,6 +52,13 @@ const MainLayout = () => {
         axios.post('http://localhost:5000/tasks', data)
         reset();
         setOpen(false);
+        const activityData = {
+            operation: "Added",
+            title: formData.title,
+            modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
+            user: user.email
+        }
+        axios.post('http://localhost:5000/activities', activityData);
     }
 
     useEffect(() => {
@@ -60,7 +67,9 @@ const MainLayout = () => {
                 setUser(currentUser);
                 setLoading(false);
                 axios.get(`http://localhost:5000/tasks/?email=${currentUser.email}`)
-                    .then(res => setTasks(res.data))
+                    .then(res => setTasks(res.data));
+                axios.get(`http://localhost:5000/activities/?email=${currentUser.email}`)
+                    .then(res => setActivities(res.data))
             } else {
                 setLoading(false)
             }
