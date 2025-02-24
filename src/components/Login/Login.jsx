@@ -1,5 +1,5 @@
 import login from '../../assets/login.png'
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { getAdditionalUserInfo, getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { app } from '../../../firebase.config';
 import Swal from 'sweetalert2';
 import axios from 'axios';
@@ -22,15 +22,16 @@ const Login = () => {
     const handleClick = () => {
         signInWithPopup(auth, provider)
             .then((res) => {
-                const user = res.user
-                const data = {
-                    name: user.displayName,
-                    email: user.email,
-                    photoURL: user.photoURL,
-                    createdAt: user.metadata.creationTime,
-                    lastLogin: user.metadata.lastSignInTime
-                };
-                axios.put('http://localhost:5000/users', data)
+                const additionalUserInfo = getAdditionalUserInfo(res);
+                if (additionalUserInfo.isNewUser) {
+                    const user = res.user
+                    const data = {
+                        name: user.displayName,
+                        email: user.email,
+                        userId: user.uid,
+                    };
+                    axios.post('http://localhost:5000/users', data)
+                }
                 Toast.fire({
                     icon: "success",
                     title: 'Log in sucessful!'
