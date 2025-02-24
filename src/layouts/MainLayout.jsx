@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { io } from "socket.io-client";
 import Swal from "sweetalert2";
 import moment from "moment";
+import axios from "axios";
 
 export const TaskContext = createContext(null);
 
@@ -24,7 +25,7 @@ const MainLayout = () => {
     const location = useLocation()
 
     const auth = getAuth(app);
-    const socket = io("https://tasksync-server-production.up.railway.app/");
+    const socket = io("http://localhost:5000/");
 
 
     const Toast = Swal.mixin({
@@ -48,26 +49,9 @@ const MainLayout = () => {
             addedOn: moment().format("MMMM Do YYYY, h:mm A"),
             deadline: moment(prevDate).format("MMMM Do YYYY, h:mm A")
         }
-        socket.emit("addTask", data)
-        socket.on('taskAdded', (data) => {
-            const activityData = {
-                operation: "Added",
-                title: formData.title,
-                modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
-                user: user.email
-            }
-            socket.emit('modified', activityData);
-            Toast.fire({
-                icon: "success",
-                title: data
-            });
-            reset();
-            setOpen(false);
-            socket.emit("getTasks", user.email);
-            socket.on("tasks", (tasks) => setTasks(tasks));
-            socket.emit('getActivities', user.email);
-            socket.on('activities', (data) => setActivities(data));
-        })
+        axios.post('http://localhost:5000/tasks', data)
+        reset();
+        setOpen(false);
     }
 
     useEffect(() => {
@@ -75,12 +59,14 @@ const MainLayout = () => {
             if (currentUser) {
                 setUser(currentUser);
                 setLoading(false);
-                socket.emit("getTasks", currentUser.email);
-                socket.on("tasks", (tasks) => setTasks(tasks));
+                axios.get(`http://localhost:5000/tasks/?email=${currentUser.email}`)
+                    .then(res => setTasks(res.data))
             } else {
                 setLoading(false)
             }
         });
+
+        socket.on("tasks", (tasks) => setTasks(tasks));
 
         return () => {
             unsubscribe()
@@ -105,7 +91,7 @@ const MainLayout = () => {
         setTasks,
         socket,
         Toast,
-        user,activities,
+        user, activities,
         setActivities
     }
 
@@ -129,13 +115,13 @@ const MainLayout = () => {
                             <label className="label">
                                 <span className={`label-text`}>Title</span>
                             </label>
-                            <input type="text" placeholder="Title" {...register('title', { required: true })}  maxLength="50" className="input max-lg:input-sm input-bordered" required />
+                            <input type="text" placeholder="Title" {...register('title', { required: true })} maxLength="50" className="input max-lg:input-sm input-bordered" required />
                         </div>
                         <div className="form-control">
                             <label className="label">
                                 <span className={`label-text`}>Description</span>
                             </label>
-                            <textarea className="textarea textarea-bordered" placeholder="Description"  maxLength="200" {...register('description', { required: true })}></textarea>
+                            <textarea className="textarea textarea-bordered" placeholder="Description" maxLength="200" {...register('description', { required: true })}></textarea>
                         </div>
                         <div className="form-control">
                             <label className="label">
