@@ -106,14 +106,14 @@ const MainLayout = () => {
 
     return (
         <TaskContext.Provider value={data}>
-            <div className="min-h-lvh">
+            <div className="min-h-lvh leading-none">
                 <Navbar setUser={setUser}></Navbar>
                 <div className="w-11/12 mx-auto flex max-sm:justify-center justify-end">
                     <button onClick={() => setOpen(true)} className="btn text-lg ml-2 max-lg:btn-sm bg-colorOne hover:bg-colorOne text-colorThree border-none btn-wide mt-5 lg:mt-10">Add a new task</button>
                 </div>
                 <div className="w-11/12 mx-auto pt-5 lg:pt-10 flex justify-between">
                     <Sidebar></Sidebar>
-                    <div className={`lg:w-[70%] border border-colorTwo rounded-xl sm:h-[70vh] overflow-scroll p-5 w-full ${location.pathname === '/log' ? "hidden" : ''}`}>
+                    <div className={`lg:w-[74%] border border-colorTwo rounded-xl overflow-scroll w-full ${location.pathname === '/log' ? "hidden" : ''}`}>
                         <Outlet></Outlet>
                     </div>
                 </div>

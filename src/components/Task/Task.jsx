@@ -2,22 +2,22 @@ import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import { TaskContext } from '../../layouts/MainLayout';
 import moment from 'moment';
-import { useDrag } from 'react-dnd';
 import { useForm } from 'react-hook-form';
 import Modal from 'react-responsive-modal';
 import axios from 'axios';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const Task = ({ task }) => {
     const [open, setOpen] = useState(false);
     const { register, handleSubmit, reset } = useForm();
     const { user } = useContext(TaskContext);
-    const [{ isDragging }, drag] = useDrag(() => ({
-        type: "task",
-        item: { task: task },
-        collect: (monitor) => ({
-            isDragging: !!monitor.isDragging()
-        })
-    }))
+    const { setNodeRef, attributes, listeners, transform, transition, isDragging } = useSortable({
+        id: task._id
+    })
+    // const { setNodeRef, attributes, listeners, transform } = useDraggable({
+    //     id: task._id
+    // });
     const handleDelete = () => {
         axios.delete(`http://localhost:5000/tasks/${task._id}/?email=${user.email}`);
         const activityData = {
@@ -49,9 +49,14 @@ const Task = ({ task }) => {
         axios.post('http://localhost:5000/activities', activityData);
     }
     return (
-        <div ref={drag} className={`rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[50vh] overflow-scroll sm:h-[30vh] ${isDragging ? "opacity-25" : ''}`}>            <h3 className='text-xl font-bold text-colorOne'>{task.title}</h3>
-            <p className='overflow-auto'>{task.description}</p>
-            <p className='font-mono text-xs my-2'>Deadline:<br />{task.deadline}</p>
+        <div ref={setNodeRef} {...attributes} style={{ transform: CSS.Transform.toString(transform), transition,
+            opacity: isDragging ? 0.5 : 1,  // Ensure it remains visible
+            zIndex: isDragging ? 1000 : "auto",  }} className={`rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[50vh] overflow-scroll sm:h-[30vh] bg-colorThree dark:bg-colorFour`}>
+            <div {...listeners}>
+                <h3 className='text-lg font-bold text-colorOne leading-none'>{task.title}</h3>
+                <p className='overflow-auto text-xs'>{task.description}</p>
+                <p className='font-mono text-xs text-gray-500 my-2'>{task.deadline}</p>
+            </div>
             <div className='flex justify-between'>
                 <button onClick={handleDelete} className='btn-sm btn bg-colorOne text-colorThree hover:bg-colorOne'>Delete</button>
                 <button onClick={handleEdit} className='btn-sm btn bg-colorOne text-colorThree hover:bg-colorOne'>Update</button>
