@@ -35,6 +35,14 @@ const Home = () => {
     const oldCategory = activeTask.category;
     const overTask = tasks.find(task => task._id === overId);
     if (activeTask.category === overTask?.category) {
+      axios.post(`http://localhost:5000/taskOrder/?email=${user.email}`, { taskId, overId });
+      const activityData = {
+        operation: `Reordered`,
+        title: activeTask.title,
+        modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
+        user: user.email
+      }
+      axios.post('http://localhost:5000/activities', activityData);
       const updated = arrayMove(
         columns[activeTask.category],
         columns[activeTask.category].findIndex(task => task._id === taskId),
