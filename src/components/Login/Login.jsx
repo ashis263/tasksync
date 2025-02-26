@@ -30,7 +30,7 @@ const Login = () => {
                         email: user.email,
                         userId: user.uid,
                     };
-                    axios.post('http://localhost:5000/users', data)
+                    axios.post('https://tasksync-server-production.up.railway.app/users', data)
                 }
                 Toast.fire({
                     icon: "success",

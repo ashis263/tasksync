@@ -12,7 +12,7 @@ const Sidebar = () => {
         return () => socket.off(activities);
     }, [])
     return (
-        <aside className={`${location.pathname === '/log' ? "w-full" : 'max-lg:hidden'} border border-colorTwo rounded-xl p-5 flex flex-col h-lvh  lg:w-1/4`}>
+        <aside className={`${location.pathname === '/log' ? "w-full" : 'max-lg:hidden'} border border-colorTwo rounded-xl p-5 flex flex-col h-[70vh] sm:h-lvh  lg:w-1/4`}>
             <h2 className="text-xl sm:text-3xl font-medium mb-5 border-b border-colorOne">Activity Log</h2>
             <div className=" h-full overflow-auto">
                 <div className="">

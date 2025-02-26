@@ -25,7 +25,7 @@ const MainLayout = () => {
     const location = useLocation()
 
     const auth = getAuth(app);
-    const socket = io("http://localhost:5000/");
+    const socket = io("https://tasksync-server-production.up.railway.app/");
 
 
     const Toast = Swal.mixin({
@@ -49,7 +49,7 @@ const MainLayout = () => {
             addedOn: moment().format("MMMM Do YYYY, h:mm A"),
             deadline: moment(prevDate).format("MMMM Do YYYY, h:mm A")
         }
-        axios.post('http://localhost:5000/tasks', data)
+        axios.post('https://tasksync-server-production.up.railway.app/tasks', data)
         reset();
         setOpen(false);
         const activityData = {
@@ -58,7 +58,7 @@ const MainLayout = () => {
             modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
             user: user.email,
         }
-        axios.post('http://localhost:5000/activities', activityData);
+        axios.post('https://tasksync-server-production.up.railway.app/activities', activityData);
     }
 
     useEffect(() => {
@@ -66,9 +66,9 @@ const MainLayout = () => {
             if (currentUser) {
                 setUser(currentUser);
                 setLoading(false);
-                axios.get(`http://localhost:5000/tasks/?email=${currentUser.email}`)
+                axios.get(`https://tasksync-server-production.up.railway.app/tasks/?email=${currentUser.email}`)
                     .then(res => setTasks(res.data));
-                axios.get(`http://localhost:5000/activities/?email=${currentUser.email}`)
+                axios.get(`https://tasksync-server-production.up.railway.app/activities/?email=${currentUser.email}`)
                     .then(res => setActivities(res.data))
             } else {
                 setLoading(false)

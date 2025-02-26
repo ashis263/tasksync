@@ -21,14 +21,14 @@ const Task = ({ task }) => {
     }
     const isDeadlineOver = isPastDate(task.deadline);
     const handleDelete = () => {
-        axios.delete(`http://localhost:5000/tasks/${task._id}/?email=${user.email}`);
+        axios.delete(`https://tasksync-server-production.up.railway.app/tasks/${task._id}/?email=${user.email}`);
         const activityData = {
             operation: "Deleted",
             title: task.title,
             modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
             user: user.email
         }
-        axios.post('http://localhost:5000/activities', activityData);
+        axios.post('https://tasksync-server-production.up.railway.app/activities', activityData);
     }
     const handleEdit = () => {
         setOpen(true);
@@ -39,7 +39,7 @@ const Task = ({ task }) => {
             ...other,
             deadline: moment(prevDate).format("MMMM Do YYYY, h:mm A"),
         }
-        axios.put(`http://localhost:5000/tasks/${task._id}/?email=${user.email}`, data);
+        axios.put(`https://tasksync-server-production.up.railway.app/tasks/${task._id}/?email=${user.email}`, data);
         reset();
         setOpen(false);
         const activityData = {
@@ -48,22 +48,24 @@ const Task = ({ task }) => {
             modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
             user: user.email
         }
-        axios.post('http://localhost:5000/activities', activityData);
+        axios.post('https://tasksync-server-production.up.railway.app/activities', activityData);
     }
     return (
         <div ref={setNodeRef} {...attributes} style={{
             transform: CSS.Transform.toString(transform), transition,
             opacity: isDragging ? 0.5 : 1,  // Ensure it remains visible
             zIndex: isDragging ? 1000 : "auto",
-        }} className={`rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[50vh] overflow-scroll sm:h-[30vh] bg-colorThree dark:bg-colorFour`}>
+        }} className={`rounded-xl p-5 border shadow-lg shadow-colorOne border-colorOne flex flex-col justify-between text-justify mb-2 h-[20vh] overflow-scroll sm:h-[30vh] bg-colorThree dark:bg-colorFour`}>
             <div {...listeners}>
                 <h3 className='text-lg font-bold text-colorOne leading-none'>{task.title}</h3>
                 <p className='overflow-auto text-xs'>{task.description}</p>
-                <p className={`font-mono text-xs text-gray-500 my-2 ${(task.category === "To Do" && isDeadlineOver) ? "text-red-500" : ""} `}>{task.deadline}</p>
             </div>
-            <div className='flex justify-between'>
-                <button onClick={handleDelete} className='btn-sm btn bg-colorOne text-colorThree hover:bg-colorOne'>Delete</button>
-                <button onClick={handleEdit} className='btn-sm btn bg-colorOne text-colorThree hover:bg-colorOne'>Update</button>
+            <div>
+                <p className={`font-mono text-xs text-gray-500 my-2 ${(task.category === "To Do" && isDeadlineOver) ? "text-red-500" : ""} `}>{task.deadline}</p>
+                <div className='flex justify-between'>
+                    <button onClick={handleDelete} className='btn-sm btn bg-colorOne text-colorThree hover:bg-colorOne'>Delete</button>
+                    <button onClick={handleEdit} className='btn-sm btn bg-colorOne text-colorThree hover:bg-colorOne'>Update</button>
+                </div>
             </div>
             <Modal open={open} onClose={() => setOpen(!open)} center>
                 <h3 className="text-2xl sm:text-4xl sm:px-20 text-center text-colorOne font-medium">Update task</h3>

@@ -35,14 +35,14 @@ const Home = () => {
     const oldCategory = activeTask.category;
     const overTask = tasks.find(task => task._id === overId);
     if (activeTask.category === overTask?.category) {
-      axios.post(`http://localhost:5000/taskOrder/?email=${user.email}`, { taskId, overId });
+      axios.post(`https://tasksync-server-production.up.railway.app/taskOrder/?email=${user.email}`, { taskId, overId });
       const activityData = {
         operation: `Reordered`,
         title: activeTask.title,
         modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
         user: user.email
       }
-      axios.post('http://localhost:5000/activities', activityData);
+      axios.post('https://tasksync-server-production.up.railway.app/activities', activityData);
       const updated = arrayMove(
         columns[activeTask.category],
         columns[activeTask.category].findIndex(task => task._id === taskId),
@@ -60,7 +60,7 @@ const Home = () => {
         setCategoryModified(!categoryModified)
       }
       const { _id, ...data } = activeTask;
-      axios.put(`http://localhost:5000/tasks/${_id}/?email=${user.email}`, data);
+      axios.put(`https://tasksync-server-production.up.railway.app/tasks/${_id}/?email=${user.email}`, data);
       if (oldCategory !== data.category) {
         const activityData = {
           operation: `Moved from ${oldCategory} to ${data.category}`,
@@ -68,7 +68,7 @@ const Home = () => {
           modifiedOn: moment().format("MMMM Do YYYY, h:mm A"),
           user: user.email
         }
-        axios.post('http://localhost:5000/activities', activityData);
+        axios.post('https://tasksync-server-production.up.railway.app/activities', activityData);
       }
     }
   };
